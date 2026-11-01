@@ -1,16 +1,18 @@
-{% extends 'layout.html' %}
+{% extends 'admin_layout.html' %}
 
 {% block title %}Admin{% endblock %}
 
 {% block main %}
-<form method="post">
-  {% for field in content %}
-  <div class="mb-3">
-    <label class="fw-bold mb-2" for="{{ field['id'] }}">{{ field.content_name.capitalize() }}</label>
-    <textarea class="form-control w-auto" id="{{ field.id }}" name="{{ field.content_name }}"
-      placeholder="{{ field.content_name }}" type="text">{{ field.content }}</textarea>
-  </div>
-  {% endfor %}
-  <button class="btn btn-success px-4 my-3" type="submit">Save</button>
-</form>
+<div class="container py-3 py-sm-5">
+  <form method="post">
+    {% for field in content %}
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="{{ field['id'] }}">{{ field.content_name.capitalize() }}</label>
+      <textarea class="form-control w-auto" id="{{ field.id }}" name="{{ field.content_name }}"
+        placeholder="{{ field.content_name }}" type="text">{{ field.content }}</textarea>
+    </div>
+    {% endfor %}
+    <button class="btn btn-success px-4 my-3" type="submit">Save</button>
+  </form>
+</div>
 {% endblock %}

@@ -1,41 +1,24 @@
 from cs50 import SQL
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 from markupsafe import escape
+import os
 
 app = Flask(__name__)
 
 db = SQL('sqlite:///database/mattiabtech.db')
 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/about')
-def about():
-
-    # List of dictionaries with db rows
-    rows = db.execute(
-        "SELECT * FROM content WHERE page_name = ?", 'about'
-    )
-
-    # A dictionary of dictionaries, with content_name as key, id and content as values
-    content = {}
-    for row in rows:
-        content[row['content_name']] = {
-            'id': row['id'],
-            'content': row['content']
-        }
-        
-
-    return render_template('about.html', content=content)
+@app.route('/admin/')
+def home():
+    return redirect('/admin/home')
 
 @app.route('/admin/<page>', methods=['POST', 'GET'])
 def admin(page):
+
+    page = escape(page)
     
     if request.method == 'POST':
 
+        # Update database with form fields values
         for content_name, content_value in request.form.items():
             db.execute(
                 "UPDATE content SET content = ? "
@@ -43,6 +26,21 @@ def admin(page):
                 content_value, page, content_name
             )
 
+        # Get new content from database
+        content = get_content(page)
+
+        # Create the output directory in case it doesn't exists
+        OUT_DIR = 'output_website'
+        os.makedirs(OUT_DIR, exist_ok=True)
+
+        filename = 'index.html' if page == 'home' else f'{page}.html'
+        filepath = os.path.join(OUT_DIR, filename)
+
+        # Write content to a new file, overriding the previous one in case
+        with open(filepath, 'w') as f:
+            f.write(render_template(filename, content=content))
+
+        return redirect(url_for('admin', page=page))
 
     content = db.execute(
         "SELECT * FROM content WHERE page_name = ?", page
@@ -53,18 +51,12 @@ def admin(page):
 
 def get_content(page):
     """
-    Get content of a page from the database, in the format of a dictionary, with content_name cols as keys
-    Values are dictionaries containing the id of the row and the content itself. Example:
-    { 
-        'title' : {
-            'id': 1,
-            'content': 'Amazing Title'
-        },
+    Get content of a page from the database, in the format of a dictionary, with content_name cols as keys and
+    content as values. Ex:
 
-        'biography': {
-            'id': 2,
-            'content': 'Amazing biography'
-        }
+    { 
+        'title': 'Amazing Title',
+        'biography': 'Amazing biography' 
     }
     """
 
@@ -73,14 +65,4 @@ def get_content(page):
         "SELECT * FROM content WHERE page_name = ?", page
     )
 
-    # A dictionary of dictionaries, with content_name as key, id and content as values
-    content = {}
-    for row in rows:
-        content[row['content_name']] = {
-            'id': row['id'],
-            'content': row['content']
-        }
-
-    return content
-
-
+    return {row['content_name']: row['content'] for row in rows}

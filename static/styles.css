@@ -34,4 +34,5 @@ main {
 
 textarea {
   field-sizing: content;
+  min-width: 400px;
 }

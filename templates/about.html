@@ -4,7 +4,9 @@
 
 {% block main %}
 <div class="container py-3 py-sm-5">
-  <h1 class="mb-4">{{ content['title'] }}</h1>
-  <p>{{ content['biography'] }}</p>
+  <h1 class="mb-4">{{ content['title']['content'] }}</h1>
+  {% for para in content['biography']['content'] %}
+  <p>{{ para }}</p>
+  {% endfor %}
 </div>
 {% endblock %}

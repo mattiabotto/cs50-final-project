@@ -32,3 +32,6 @@ main {
   border-radius: 1.5rem;
 }
 
+textarea {
+  field-sizing: content;
+}

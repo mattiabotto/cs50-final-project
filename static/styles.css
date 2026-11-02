@@ -37,3 +37,14 @@ textarea {
   min-width: 200px;
   max-width: 100%;
 }
+
+.card {
+  min-height: 400px;
+  max-width: 500px;
+}
+
+.card-img-top {
+  height: 300px;
+  object-fit: cover;
+  object-position: top;
+}

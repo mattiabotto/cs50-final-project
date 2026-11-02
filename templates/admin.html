@@ -3,18 +3,66 @@
 {% block title %}Admin{% endblock %}
 
 {% block main %}
-<!-- TODO: title is not working -->
 
 <div class="container py-3 py-sm-5">
   <h1 class="mb-3 mb-sm-5">Edit {{ title }} page</h1>
   <form method="post">
     {% for field in content %}
     <div class="mb-3">
-      <label class="fw-bold mb-2" for="{{ field['id'] }}">{{ field.content_name.capitalize() }}</label>
-      <textarea class="form-control w-auto" id="{{ field.id }}" name="{{ field.content_name }}"
-        placeholder="{{ field.content_name }}" type="text">{{ field.content }}</textarea>
+      <label class="fw-bold mb-2" for="{{ field['id'] }}">{{ field['content_name'].capitalize() }}</label>
+      <textarea class="form-control w-auto" id="{{ field['id'] }}" name="{{ field['content_name'] }}"
+        placeholder="{{ field['content_name'] }}" type="text">{{ field.content }}</textarea>
     </div>
     {% endfor %}
+
+    {% if title == 'projects' %}
+
+    <div class="row">
+      {% for project in projects %}
+      <div class="col-lg-6 col-xxl-4 mb-4">
+        <div class="card h-100 mx-auto">
+          <img src="../output_website/img/{{ project['img'] }}" class="card-img-top"
+            alt="Preview of {{ project['title'] }}">
+          <div class="card-body d-flex flex-column align-items-center">
+            <h2 class="card-title fs-5">{{ project['title'] }}</h2>
+            <p class="card-text">{{ project['content'] }}</p>
+            <a href="{{ project['repo_link'] }}" class="btn btn-primary mt-auto mb-2">GitHub repository</a>
+            <a href="{{ project['preview_link'] }}" class="btn btn-primary mb-2">Live preview</a>
+
+            <div class="d-flex align-self-stretch justify-content-between">
+              <a href="" class="btn btn-link">Edit</a>
+              <a type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#delete-{{ project['id'] }}">
+                Delete
+              </a>
+              <div class="modal fade" id="delete-{{ project['id'] }}" tabindex="-1"
+                aria-labelledby="{{ project['id'] }}ModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="{{ project['id'] }}ModalLabel">Are you sure?</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure to delete this project card and all of its data?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <form action="{{ url_for('delete_project', id=project['id'] )}}" method="post"><button
+                          type="submit" class="btn btn-danger">Delete</button></form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% endif %}
+
     <button class="btn btn-success px-4 my-3" type="submit">Save</button>
   </form>
 </div>

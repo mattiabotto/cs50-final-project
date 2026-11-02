@@ -1,5 +1,6 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, send_from_directory
+from helpers import get_content, normalize_content, write_page
 from markupsafe import escape
 import os
 
@@ -7,10 +8,83 @@ app = Flask(__name__)
 
 db = SQL('sqlite:///database/mattiabtech.db')
 
+@app.route('/')
+def index():
+    return redirect('/admin/home')
+
+
 @app.route('/admin/')
 def home():
     return redirect('/admin/home')
 
+@app.route('/admin/projects')
+def admin_projects():
+    page = 'projects'
+
+    # Editing a project will be another route ('/admin/projects/<int:id>/edit)
+    # Deleting will popup a modal with 'are you sure' (Add to a list of projects to delete that is sent back and processed
+    # only when the Save button is pressed, or add another route and redirect?)
+
+    if request.method == 'POST':
+
+        # Update database with form fields values
+        for content_name, content_value in request.form.items():
+            
+            content_value = normalize_content(content_value)
+            db.execute(
+                "UPDATE content SET content = ? "
+                "WHERE page_name = ? AND content_name = ?",
+                content_value, page, content_name
+            )
+
+        # Get new content from database
+        content = get_content(page, db)
+
+        write_page(page, content=content)
+
+        return redirect(url_for('admin', page=page))
+
+    # Get regular content of the page
+    content = db.execute(
+        "SELECT * FROM content WHERE page_name = ?", page
+    )
+
+    # Get card content
+    projects = db.execute(
+        "SELECT * FROM projects"
+    )
+
+    return render_template('admin.html', content=content, projects=projects, title=page)
+
+# TODO: edit route
+
+@app.route('/admin/projects/<int:id>/delete', methods=['POST'])
+def delete_project(id):
+
+    page = 'projects'
+
+    # Delete from database the project
+    db.execute(
+        "DELETE FROM projects WHERE id = ?", id
+    )
+
+    # Get generic content for the page
+    content = get_content(page, db)
+
+    # Get card-specific content from projects table
+    projects = db.execute(
+        "SELECT * FROM projects"
+    )
+    
+    # Write updated page to output directory
+    write_page(page, content=content, projects=projects)
+
+    # Redirect to admin/projects
+    return redirect(url_for('admin_projects'))
+
+
+# Generic route, important that stays after the specific page routes, 
+# otherwise this generic route will execute in place of the specific
 @app.route('/admin/<page>', methods=['POST', 'GET'])
 def admin(page):
 
@@ -29,18 +103,10 @@ def admin(page):
             )
 
         # Get new content from database
-        content = get_content(page)
+        content = get_content(page, db)
 
-        # Create the output directory in case it doesn't exists
-        OUT_DIR = 'output_website'
-        os.makedirs(OUT_DIR, exist_ok=True)
-
-        filename = 'index.html' if page == 'home' else f'{page}.html'
-        filepath = os.path.join(OUT_DIR, filename)
-
-        # Write content to a new file, overriding the previous one in case
-        with open(filepath, 'w') as f:
-            f.write(render_template(filename, content=content))
+        # Write the updated page to output directory
+        write_page(page, content=content)
 
         return redirect(url_for('admin', page=page))
 
@@ -49,47 +115,6 @@ def admin(page):
     )
     return render_template('admin.html', content=content, title=page)
 
-
-
-def get_content(page):
-    """
-    Get content of a page from the database, in the format of a dictionary, with content_name as keys and
-    a dictionary with content and is_multipara flag as keys.
-    If is_multipara is set to 1, then the content value will be a list of strings, representing different paragraphs,
-    when the input is separated by a double line
-
-    { 
-        'title': {'content': 'Amazing Title', 'is_multipara': 0}
-        'biography': {'content': ['Amazing biography.', 'Another paragraph.], 'is_multipara': 1} 
-    }
-    """
-
-    # List of dictionaries with db rows
-    rows = db.execute(
-        "SELECT * FROM content WHERE page_name = ?", page
-    )
-
-    content = {}
-
-    for row in rows:
-        content[row['content_name']] = {
-            'content': row['content'],
-            'is_multipara': row['is_multipara']
-        }
-
-    content = split_para(content)
-
-    return content
-
-def normalize_content(content):
-    r"""Normalize a string of content, replacing Windows-style line endings \r\n with \n"""
-    return content.replace('\r\n', '\n')
-
-def split_para(content):
-    """Split the content into a list of strings, only when is_multipara flag is true (1)"""
-
-    for field in content:
-        if content[field]['is_multipara']:
-            content[field]['content'] = content[field]['content'].split('\n\n')
-
-    return content
+@app.route('/output_website/img/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('output_website/img', filename)

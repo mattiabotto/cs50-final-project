@@ -17,6 +17,7 @@ def index():
 def home():
     return redirect('/admin/home')
 
+
 @app.route('/admin/projects')
 def admin_projects():
     page = 'projects'
@@ -55,6 +56,22 @@ def admin_projects():
     )
 
     return render_template('admin.html', content=content, projects=projects, title=page)
+
+@app.route('/admin/projects/add', methods=['GET', 'POST'])
+def add_project():
+
+    if request.method == 'POST':
+
+        # Insert into database new card
+        db.execute(
+            "INSERT INTO projects (title, content, img, repo_link, preview_link) VALUES (?, ?, ?, ?, ?)",
+            request.form.get('title'), request.form.get('content'), request.form.get('img'),
+            request.form.get('repo_link'), request.form.get('preview_link')
+        )
+
+        return redirect(url_for('admin_projects'))
+
+    return render_template('add_project.html')
 
 # TODO: edit route
 
@@ -114,6 +131,7 @@ def admin(page):
         "SELECT * FROM content WHERE page_name = ?", page
     )
     return render_template('admin.html', content=content, title=page)
+
 
 @app.route('/output_website/img/<path:filename>')
 def serve_image(filename):

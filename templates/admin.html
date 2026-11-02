@@ -59,6 +59,11 @@
         </div>
       </div>
       {% endfor %}
+
+      <!-- Button for adding a card -->
+      <div class="col-lg-6 col-xxl-4 mb-4 d-flex align-items-center justify-content-center">
+        <a href="{{ url_for('add_project') }}" class="link-secondary"><i class="bi bi-plus-circle fs-1"></i></a>
+      </div>
     </div>
 
     {% endif %}

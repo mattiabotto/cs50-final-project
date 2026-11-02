@@ -2,8 +2,6 @@ from cs50 import SQL
 from flask import render_template
 import os
 
-
-
 def get_content(page, db):
     """
     Get content of a page from the database, in the format of a dictionary, with content_name as keys and

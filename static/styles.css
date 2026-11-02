@@ -32,10 +32,11 @@ main {
   border-radius: 1.5rem;
 }
 
-textarea {
+textarea.form-control {
   field-sizing: content;
-  min-width: 200px;
+  min-width: 300px;
   max-width: 100%;
+  width: auto;
 }
 
 .card {

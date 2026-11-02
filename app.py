@@ -47,7 +47,7 @@ def admin(page):
     content = db.execute(
         "SELECT * FROM content WHERE page_name = ?", page
     )
-    return render_template('admin.html', content=content)
+    return render_template('admin.html', content=content, title=page)
 
 
 

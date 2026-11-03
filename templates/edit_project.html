@@ -1,0 +1,41 @@
+{% extends 'admin_layout.html' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block main %}
+
+<div class="container py-3 py-sm-5">
+  <h1 class="mb-3 mb-sm-5">Edit the project: {{ project['title'] }}</h1>
+  <form method="post">
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="title">Project's Title:*</label>
+      <textarea class="form-control" id="title" name="title" placeholder="Enter the title of the project" required
+        type="text">{{ project['title'] }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="description">Project's Description:*</label>
+      <textarea class="form-control" id="description" name="content" placeholder="Enter the description of the project"
+        required type="text">{{ project['content'] }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="img">Image file's name:</label>
+      <textarea class="form-control" id="img" name="img" placeholder="Ex: image.jpg"
+        type="text">{{ project['img'] }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="repo_link">Link to repository:</label>
+      <textarea class="form-control" id="repo_link" name="repo_link"
+        placeholder="Enter the link to the GitHub repository of the project"
+        type="text">{{ project['repo_link'] }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="preview_link">Link to Live Preview:</label>
+      <textarea class="form-control" id="preview_link" name="preview_link"
+        placeholder="Enter the link to the live preview of the project"
+        type="text">{{ project['preview_link'] }}</textarea>
+    </div>
+    <button class="btn btn-success" type="submit">Save</button>
+
+  </form>
+
+  {% endblock %}

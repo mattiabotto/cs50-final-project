@@ -58,9 +58,9 @@ def admin_projects():
 @app.route('/admin/projects/add', methods=['GET', 'POST'])
 def add_project():
 
-    if request.method == 'POST':
+    page = 'projects'
 
-        page = 'projects'
+    if request.method == 'POST':
 
         # Insert into database new card
         db.execute(
@@ -84,7 +84,41 @@ def add_project():
 
     return render_template('add_project.html')
 
-# TODO: edit route
+@app.route('/admin/projects/<int:id>/edit', methods=['GET', 'POST'])
+def edit_projects(id):
+
+    page = 'projects'
+
+    if request.method == 'POST':
+
+        # Update database with edited content
+        db.execute(
+            "UPDATE projects"
+            " SET title = ?, content = ?, img = ?, repo_link = ?, preview_link = ?" 
+            " WHERE id = ?",
+            request.form.get('title'), request.form.get('content'), request.form.get('img'),
+            request.form.get('repo_link'), request.form.get('preview_link'), id
+        )
+
+        # Get generic content for the page
+        content = get_content(page, db)
+    
+        # Get card-specific content from projects table
+        projects = db.execute(
+            "SELECT * FROM projects"
+        )
+        
+        # Write updated page to output directory
+        write_page(page, content=content, projects=projects)
+        
+        return redirect(url_for('admin_projects'))
+
+    # Get project's content
+    project = db.execute(
+        "SELECT * FROM projects WHERE id = ?", id
+    )[0]
+
+    return render_template('edit_project.html', project=project)
 
 @app.route('/admin/projects/<int:id>/delete', methods=['POST'])
 def delete_project(id):

@@ -1,15 +1,26 @@
 # CS50 Final Project
 
-This is my final project for CS50 course.
+This is my final project for CS50 course: a personal website with a CMS (Content Management System) written with Flask,
+for managin the content of the website.
 
-## Use of external AI tools and workflow
+## Project description
 
-Gemini AI on free-tier was used, mainly for:
+A flask application allows to manage the content of the website, following this workflow:
 
-- Brainstorming: putting together ideas, searching technical solutions between the many available online,
-  searching resources for learning new skills and technologies to use.
-- Coding: the code was written manually by the author, AI was used only for suggesting code that required new
-  knowledge to be acquired.
+- Content is saved into a SQLite database, in the /database folder
+- app.py is the main application, that allows to access the website from the route /admin: a UI with the same layout as
+  the website, that allows to modify certain fields that are in the database.
+- When the Save button is pressed, the database is updated and the page file into the folder /output_website is updated
+
+## State of the project
+
+The project is currently at his first stage of development (see below 'Good outcome'):
+
+- The application is designed to run locally and to save the output locally
+- The updated files of the website have to be manually pushed to deployment
+- The UI is a basic one and has space for improvements
+- No authentication is set for editing (pure local editing, but anyway the push requires git authentication)
+- Which fields needs to be edited requires manual update of the database and the templates
 
 ## Initial idea and exploring
 
@@ -60,3 +71,12 @@ the better outcome and best outcome are improvements on the MVP
 - Image uploads
 - Live preview of changes before saving
 - Sync status indicator ('Last synced at 2.15 PM')
+
+## Use of external AI tools and workflow
+
+Gemini AI on free-tier was used, mainly for:
+
+- Brainstorming: putting together ideas, searching technical solutions between the many available online,
+  searching resources for learning new skills and technologies to use.
+- Coding: the code was written manually by the author, AI was used only for suggesting code that required new
+  knowledge to be acquired.

@@ -23,8 +23,6 @@ def admin_projects():
     page = 'projects'
 
     # Editing a project will be another route ('/admin/projects/<int:id>/edit)
-    # Deleting will popup a modal with 'are you sure' (Add to a list of projects to delete that is sent back and processed
-    # only when the Save button is pressed, or add another route and redirect?)
 
     if request.method == 'POST':
 
@@ -62,12 +60,25 @@ def add_project():
 
     if request.method == 'POST':
 
+        page = 'projects'
+
         # Insert into database new card
         db.execute(
             "INSERT INTO projects (title, content, img, repo_link, preview_link) VALUES (?, ?, ?, ?, ?)",
             request.form.get('title'), request.form.get('content'), request.form.get('img'),
             request.form.get('repo_link'), request.form.get('preview_link')
         )
+
+        # Get generic content for the page
+        content = get_content(page, db)
+    
+        # Get card-specific content from projects table
+        projects = db.execute(
+            "SELECT * FROM projects"
+        )
+        
+        # Write updated page to output directory
+        write_page(page, content=content, projects=projects)
 
         return redirect(url_for('admin_projects'))
 

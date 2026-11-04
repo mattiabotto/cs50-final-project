@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+}
+
+main {
+  min-height: calc(100vh - 74px - 32px);
+}
+
+.navbar {
+  min-height: 74px;
+  font-size: 1.1rem;
+}
+
+.light {
+  background-color: #fff6e6;
+}
+
+#hero-img {
+  margin-top: -74px;
+  background-position: center center;
+  background-image: url('../img/hero-img.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.mask {
+  background-color: hsl(0, 0%, 0%, 0.6);
+}
+
+.btn {
+  padding: .7rem 1.5rem;
+  border-radius: 1.5rem;
+}
+
+textarea.form-control {
+  field-sizing: content;
+  min-width: 300px;
+  max-width: 100%;
+  width: auto;
+}
+
+.card {
+  min-height: 400px;
+  max-width: 500px;
+}
+
+.card-img-top {
+  height: 300px;
+  object-fit: cover;
+  object-position: top;
+}

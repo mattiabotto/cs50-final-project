@@ -181,3 +181,7 @@ def admin(page):
 @app.route('/output_website/img/<path:filename>')
 def serve_image(filename):
     return send_from_directory('output_website/img', filename)
+
+
+if __name__ == '__main__':
+    app.run()

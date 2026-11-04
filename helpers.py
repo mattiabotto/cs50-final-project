@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import render_template
+from flask import flash, render_template
 import os
 
 def get_content(page, db):
@@ -48,11 +48,11 @@ def split_para(content):
 def write_page(page, **kwargs):
     """
     Write a page on the disk, in the OUT_DIR specified. Accept a variable amount of kwargs as content 
-    fetched from a database
+    fetched from a database. 
     """
     
     # Create the output directory in case it doesn't exists
-    OUT_DIR = 'output_website'
+    OUT_DIR = 'docs'
     os.makedirs(OUT_DIR, exist_ok=True)
 
     filename = 'index.html' if page == 'home' else f'{page}.html'
@@ -62,4 +62,6 @@ def write_page(page, **kwargs):
     with open(filepath, 'w') as f:
         f.write(render_template(filename, **kwargs))
 
+    flash('Content saved locally, go to the Publish page to deploy it')
+    
     return

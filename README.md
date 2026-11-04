@@ -48,6 +48,8 @@ The CMS could even run locally on a computer, or on PythonAnywhere or Fly.io
   in order to not have to manually update the files
 - **SSH authentication**: a better understanding of how public-key cryptography works when pushing a commit to GitHub
   through SSH
+- **Usage of Python's subprocess module**: it allows to spawn new processes, for calling automatic git commit
+  and pushes from python code
 
 ## Good, better and best outcomes
 

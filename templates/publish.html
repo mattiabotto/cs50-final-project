@@ -1,0 +1,21 @@
+{% extends 'admin_layout.html' %}
+
+{% block title %}Publish{% endblock %}
+
+{% block main %}
+<div class="container py-3 py-sm-5">
+  <h1 class="mb-3 mb-sm-5">Publish the website</h1>
+  <p>Click on the Publish button to trigger an automatic push to the GitHub Repository: the website will be almost
+    instantly deployed. Add a commit message below.
+  </p>
+
+  <form method="post">
+    <div class="mb-3">
+      <label class="fw-bold mb-2" for="commit">Commit message:</label>
+      <textarea class="form-control w-auto" id="commit" name="commit" placeholder="Commit message"
+        type="text"></textarea>
+    </div>
+    <button class="btn btn-success px-4 mt-3 mb-5" type="submit">Publish</button>
+  </form>
+</div>
+{% endblock %}

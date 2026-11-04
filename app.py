@@ -2,9 +2,12 @@ from cs50 import SQL
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory
 from helpers import get_content, normalize_content, write_page
 from markupsafe import escape
-import os
 
 app = Flask(__name__)
+
+app.config.from_mapping(
+        SECRET_KEY='dev'
+)
 
 db = SQL('sqlite:///database/mattiabtech.db')
 
@@ -55,6 +58,7 @@ def admin_projects():
 
     return render_template('admin.html', content=content, projects=projects, title=page)
 
+
 @app.route('/admin/projects/add', methods=['GET', 'POST'])
 def add_project():
 
@@ -83,6 +87,7 @@ def add_project():
         return redirect(url_for('admin_projects'))
 
     return render_template('add_project.html')
+
 
 @app.route('/admin/projects/<int:id>/edit', methods=['GET', 'POST'])
 def edit_projects(id):
@@ -120,6 +125,7 @@ def edit_projects(id):
 
     return render_template('edit_project.html', project=project)
 
+
 @app.route('/admin/projects/<int:id>/delete', methods=['POST'])
 def delete_project(id):
 
@@ -143,6 +149,14 @@ def delete_project(id):
 
     # Redirect to admin/projects
     return redirect(url_for('admin_projects'))
+
+
+# Automatically push the content of docs to GitHub
+@app.route('/admin/publish', methods=['POST', 'GET'])
+def publish():
+
+
+    return render_template('publish.html')
 
 
 # Generic route, important that stays after the specific page routes, 
@@ -178,9 +192,9 @@ def admin(page):
     return render_template('admin.html', content=content, title=page)
 
 
-@app.route('/output_website/img/<path:filename>')
+@app.route('/docs/img/<path:filename>')
 def serve_image(filename):
-    return send_from_directory('output_website/img', filename)
+    return send_from_directory('docs/img', filename)
 
 
 if __name__ == '__main__':

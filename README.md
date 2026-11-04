@@ -38,7 +38,7 @@ of inactivities, causing a reboot time of 30-60 seconds for the next request
 This reboot time is thus only reduced to the few moments when an admin want to change the content.
 The CMS could even run locally on a computer, or on PythonAnywhere or Fly.io
 
-## Skills to aquire or to expand
+## Skills/knowledge to aquire or to expand
 
 - **Python File Handling**: static web pages will be needed to be written using the Python application.
   Probable workflow will be: input content from a form -> elaboration of the data with Python ->
@@ -46,6 +46,8 @@ The CMS could even run locally on a computer, or on PythonAnywhere or Fly.io
 - **Automatic git workflow with Python**: ideally the new files generated should be automatically pushed to a
   github repository (there are some modules like subprocess or GitPython for it),
   in order to not have to manually update the files
+- **SSH authentication**: a better understanding of how public-key cryptography works when pushing a commit to GitHub
+  through SSH
 
 ## Good, better and best outcomes
 

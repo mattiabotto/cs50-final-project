@@ -1,6 +1,9 @@
 from cs50 import SQL
 from flask import flash, render_template
+import subprocess
 import os
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 def get_content(page, db):
     """
@@ -32,9 +35,72 @@ def get_content(page, db):
 
     return content
 
+
 def normalize_content(content):
     r"""Normalize a string of content, replacing Windows-style line endings \r\n with \n"""
     return content.replace('\r\n', '\n')
+
+
+def run_git_push(commit_message):
+    """
+    Execute the normal git workflow 'add, commit, push', catching if some errors appear along the way.
+    Success or failure message are sent to the templates with the flash function.
+    """
+
+    PUSH_TIMEOUT = 45
+
+    try:
+        subprocess.run(
+            ['git', 'add', './docs'],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        subprocess.run(
+            ['git', 'commit', '-m', commit_message],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        subprocess.run(
+            ['git', 'push'],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=PUSH_TIMEOUT
+        )
+
+        flash(
+            {
+                'text': 'Updates correctly pushed to deploy!',
+                'origin': 'run_git_push'
+            },
+            'success'
+        )
+
+    except subprocess.CalledProcessError as e:
+        flash(
+            {
+                'text': f'Publish error: {e.stderr.strip()}',
+                'origin': 'run_git_push'
+            },
+            'danger'
+        )
+    
+    except subprocess.TimeoutExpired:
+        flash(
+            {
+                'text': 'Publish timed out. Check your connection.',
+                'origin': 'run_git_push'
+            },
+            'warning'
+        )
+
 
 def split_para(content):
     """Split the content into a list of strings, only when is_multipara flag is true (1)"""
@@ -62,6 +128,10 @@ def write_page(page, **kwargs):
     with open(filepath, 'w') as f:
         f.write(render_template(filename, **kwargs))
 
-    flash('Content saved locally, go to the Publish page to deploy it')
-    
-    return
+    flash(
+        {
+            'text': 'Content saved locally, go to the Publish page to deploy it',
+            'origin': 'write_page'
+        },
+        'success'
+    )

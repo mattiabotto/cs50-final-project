@@ -1,9 +1,12 @@
 from cs50 import SQL
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory
-from helpers import get_content, normalize_content, write_page
+from helpers import get_content, normalize_content, write_page, run_git_push
 from markupsafe import escape
 
+
 app = Flask(__name__)
+
+
 
 app.config.from_mapping(
         SECRET_KEY='dev'
@@ -154,6 +157,14 @@ def delete_project(id):
 # Automatically push the content of docs to GitHub
 @app.route('/admin/publish', methods=['POST', 'GET'])
 def publish():
+
+    if request.method == 'POST':
+
+        commit_message = request.form.get('commit')
+
+        run_git_push(commit_message)
+
+        return render_template('publish.html')
 
 
     return render_template('publish.html')

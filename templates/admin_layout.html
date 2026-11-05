@@ -51,13 +51,20 @@
   </header>
 
   <main>
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      {{ message }}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message['text'] }}
+      {% if message['origin'] == 'write_page' %}
       <a href="{{ url_for('publish') }}" class="alert-link">Take me to Publish &rarr;</a>
+      {% endif %}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    {% endfor%}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     {% block main %}
 
     {% endblock %}

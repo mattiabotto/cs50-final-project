@@ -40,14 +40,14 @@ def normalize_content(content):
     r"""Normalize a string of content, replacing Windows-style line endings \r\n with \n"""
     return content.replace('\r\n', '\n')
 
-
+# TODO: Analyse possible messes with automatic pushes.
 def push_backup():
     """
     Push the entire repository including the database to a private GitHub remote.
     It is needed to switch to a new branch
     """
 
-    BRANCH_NAME = 'backup-branch'
+    BRANCH_NAME = 'backup'
     BACKUP_TIMEOUT = 45
     COMMIT_MESSAGE = 'automatic backup'
 

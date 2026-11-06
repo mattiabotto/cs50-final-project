@@ -41,15 +41,115 @@ def normalize_content(content):
     return content.replace('\r\n', '\n')
 
 
+def push_backup():
+    """
+    Push the entire repository including the database to a private GitHub remote.
+    It is needed to switch to a new branch
+    """
+
+    BRANCH_NAME = 'backup-branch'
+    BACKUP_TIMEOUT = 45
+    COMMIT_MESSAGE = 'automatic backup'
+
+    try:
+        # Switch to backup branch (force creating a new one every time)
+        subprocess.run(
+            ['git', 'switch', '-C', BRANCH_NAME],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        # Stage database
+        subprocess.run(
+            ['git', 'add', '-f', './database/*.db'],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        # Stage other files without -f flag, following .gitignore file
+        subprocess.run(
+            ['git', 'add', '.'],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        subprocess.run(
+            ['git', 'commit', '-m', COMMIT_MESSAGE],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        # Push to a private repository, setting the backup branch as main
+        subprocess.run(
+            ['git', 'push', 'backup', f'{BRANCH_NAME}:main'],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=BACKUP_TIMEOUT
+        )
+
+        # Switch back to main
+        subprocess.run(
+            ['git', 'switch', 'main'],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        flash(
+            {
+                'text': 'Backup executed correctly',
+                'origin': 'push_backup'
+            },
+            'success'
+        )
+
+    except subprocess.CalledProcessError as e:
+        flash(
+            {
+                'text': f'Backup error: {e.stderr.strip()}',
+                'origin': 'push_backup'
+            },
+            'danger'
+        )
+    
+    except subprocess.TimeoutExpired:
+        flash(
+            {
+                'text': 'Backup timed out. Check your connection.',
+                'origin': 'push_backup'
+            },
+            'warning'
+        )
+
+
 def run_git_push(commit_message):
     """
-    Execute the normal git workflow 'add, commit, push', catching if some errors appear along the way.
+    Execute the normal git workflow 'add, commit, push' for the output website, 
+    catching if some errors appear along the way.
     Success or failure message are sent to the templates with the flash function.
     """
 
     PUSH_TIMEOUT = 45
 
     try:
+
+        # Switch to main if not already
+        subprocess.run(
+            ['git', 'switch', 'main'],
+            cwd=PROJECT_ROOT,
+        )
+
         subprocess.run(
             ['git', 'add', './docs'],
             cwd=PROJECT_ROOT,
@@ -67,7 +167,7 @@ def run_git_push(commit_message):
         )
 
         subprocess.run(
-            ['git', 'push'],
+            ['git', 'push', 'origin', 'main'],
             cwd=PROJECT_ROOT,
             check=True,
             capture_output=True,

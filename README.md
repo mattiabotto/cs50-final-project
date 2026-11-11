@@ -84,3 +84,5 @@ Gemini AI on free-tier was used, mainly for:
   searching resources for learning new skills and technologies to use.
 - Coding: the code was written manually by the author, AI was used only for suggesting code that required new
   knowledge to be acquired.
+
+## Git setting for automatic workflow

@@ -11,7 +11,8 @@ main {
   font-size: 1.1rem;
 }
 
-.light {
+.light,
+.project-list-item.is-swapping {
   background-color: #fff6e6;
 }
 
@@ -53,4 +54,8 @@ textarea.form-control {
 .project-list-item:first-child .btn-up,
 .project-list-item:last-child .btn-down {
   display: none;
+}
+
+.project-list-item {
+  transition: background-color 0.4s ease;
 }

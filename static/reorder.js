@@ -15,4 +15,11 @@ reorderList.addEventListener("click", (e) => {
     const nextRow = currentRow.nextElementSibling;
     nextRow.after(currentRow);
   }
+
+  // is-swapping class add some background color during the swapping transition
+  currentRow.classList.add("is-swapping");
+
+  setTimeout(() => {
+    currentRow.classList.remove("is-swapping");
+  }, 400);
 });

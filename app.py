@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, request, url_for, send_from_directory
+from flask import Flask, flash, redirect, render_template, request, url_for, send_from_directory
 from helpers import get_content, normalize_content, write_page, run_git_push
 from markupsafe import escape
 
@@ -158,13 +158,6 @@ def delete_project(id):
     return redirect(url_for('admin_projects'))
 
 
-# Reorder project feature:
-# Add a reorder button that brings to a new page, with a list of titles of the projects and arrows for ordering
-# Use display_order column of the database, and an hidden input within each list element for the display_order value
-# Swap card feature client-side with Javascript
-# Save button and update of database with flask 
-# (add some UI feature to make obvious that Save is needed, and a Reset button, just reloading the page)
-# How to update the database? 
 @app.route('/admin/projects/reorder', methods=['POST', 'GET'])
 def reorder_projects():
 
@@ -183,7 +176,16 @@ def reorder_projects():
                 "UPDATE projects SET display_order = ? WHERE id = ?", i, project_id
             )
 
-        return redirect(url_for('reorder_projects'))
+        # Get updated projects in order
+        projects = db.execute(
+            "SELECT * FROM projects ORDER BY display_order"
+        )
+
+        content = get_content('projects', db)
+
+        write_page('projects', content=content, projects=projects)
+
+        return redirect(url_for('admin_projects'))
 
 
     return render_template('reorder_projects.html', projects=projects)

@@ -49,3 +49,8 @@ textarea.form-control {
   object-fit: cover;
   object-position: top;
 }
+
+.project-list-item:first-child .btn-up,
+.project-list-item:last-child .btn-down {
+  display: none;
+}

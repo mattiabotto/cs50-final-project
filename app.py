@@ -6,8 +6,6 @@ from markupsafe import escape
 
 app = Flask(__name__)
 
-
-
 app.config.from_mapping(
         SECRET_KEY='dev'
 )
@@ -56,7 +54,7 @@ def admin_projects():
 
     # Get card content
     projects = db.execute(
-        "SELECT * FROM projects"
+        "SELECT * FROM projects ORDER BY display_order"
     )
 
     return render_template('admin.html', content=content, projects=projects, title=page)
@@ -68,6 +66,12 @@ def add_project():
     page = 'projects'
 
     if request.method == 'POST':
+
+        # Shift display_order of other projects by one, so that the new projects added gets default display_order of 0
+        # without any collision with other projects
+        db.execute(
+            "UPDATE projects SET display_order = display_order + 1"
+        )
 
         # Insert into database new card
         db.execute(
@@ -81,7 +85,7 @@ def add_project():
     
         # Get card-specific content from projects table
         projects = db.execute(
-            "SELECT * FROM projects"
+            "SELECT * FROM projects ORDER BY display_order"
         )
         
         # Write updated page to output directory
@@ -113,7 +117,7 @@ def edit_projects(id):
     
         # Get card-specific content from projects table
         projects = db.execute(
-            "SELECT * FROM projects"
+            "SELECT * FROM projects ORDER BY display_order"
         )
         
         # Write updated page to output directory
@@ -144,7 +148,7 @@ def delete_project(id):
 
     # Get card-specific content from projects table
     projects = db.execute(
-        "SELECT * FROM projects"
+        "SELECT * FROM projects ORDER BY display_order"
     )
     
     # Write updated page to output directory
@@ -152,6 +156,37 @@ def delete_project(id):
 
     # Redirect to admin/projects
     return redirect(url_for('admin_projects'))
+
+
+# Reorder project feature:
+# Add a reorder button that brings to a new page, with a list of titles of the projects and arrows for ordering
+# Use display_order column of the database, and an hidden input within each list element for the display_order value
+# Swap card feature client-side with Javascript
+# Save button and update of database with flask 
+# (add some UI feature to make obvious that Save is needed, and a Reset button, just reloading the page)
+# How to update the database? 
+@app.route('/admin/projects/reorder', methods=['POST', 'GET'])
+def reorder_projects():
+
+    projects = db.execute(
+        "SELECT * FROM projects ORDER BY display_order"
+    )
+
+    if request.method == 'POST':
+
+        # A list of the projects ids ordered as display order
+        ordered_ids = request.form.getlist('project_id')
+
+        # Update display_order in database in the order returned by the DOM
+        for i, project_id in enumerate(ordered_ids):
+            db.execute(
+                "UPDATE projects SET display_order = ? WHERE id = ?", i, project_id
+            )
+
+        return redirect(url_for('reorder_projects'))
+
+
+    return render_template('reorder_projects.html', projects=projects)
 
 
 # Automatically push the content of docs to GitHub

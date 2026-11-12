@@ -1,0 +1,32 @@
+{% extends 'admin_layout.html' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block main %}
+
+<div class="container py-3 py-sm-5">
+  <h1 class="mb-3 mb-sm-5">Reorder projects</h1>
+  <form method="post">
+    <ul id="reorder-list">
+      {% for project in projects%}
+      <li class="d-flex justify-content-between project-list-item">
+        <input type="hidden" name="project_id" value="{{ project['id'] }}">
+        <h2 class="project-title">{{ project['title'] }}</h2>
+        <div>
+          <button type="button" class="btn btn-up">▲</button>
+          <button type="button" class="btn btn-down">▼</button>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <button type="submit" class="btn">Save Order</button>
+    <a href="/admin" class="btn">Cancel</a>
+  </form>
+</div>
+
+{% endblock%}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='reorder.js') }}" defer></script>
+{% endblock %}

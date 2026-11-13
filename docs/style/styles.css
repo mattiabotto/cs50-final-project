@@ -1,5 +1,10 @@
 body {
   margin: 0;
+  line-height: 1.6;
+}
+
+article {
+  max-inline-size: 75ch;
 }
 
 main {

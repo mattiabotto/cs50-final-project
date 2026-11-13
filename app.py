@@ -43,7 +43,12 @@ def admin_projects():
         # Get new content from database
         content = get_content(page, db)
 
-        write_page(page, content=content)
+        # Get card content
+        projects = db.execute(
+            "SELECT * FROM projects ORDER BY display_order"
+        )
+
+        write_page(page, content=content, projects=projects)
 
         return redirect(url_for('admin', page=page))
 

@@ -22,7 +22,7 @@ def home():
     return redirect('/admin/home')
 
 
-@app.route('/admin/projects')
+@app.route('/admin/projects', methods=['GET', 'POST'])
 def admin_projects():
     page = 'projects'
 

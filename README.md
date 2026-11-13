@@ -1,7 +1,11 @@
-# CS50 Final Project
+# CS50 Final Project - Personal Website with a Flask-based Content Management System
 
 This is my final project for CS50 course: a personal website with a CMS (Content Management System) written with Flask,
 for managin the content of the website.
+
+## Video Demo
+
+URL to Video:
 
 ## Project description
 
@@ -11,16 +15,9 @@ A flask application allows to manage the content of the website, following this 
 - app.py is the main application, that allows to access the website from the route /admin: a UI with the same layout as
   the website, that allows to modify certain fields that are in the database.
 - When the Save button is pressed, the database is updated and the page file into the folder /output_website is updated
-
-## State of the project
-
-The project is currently at his first stage of development (see below 'Good outcome'):
-
-- The application is designed to run locally and to save the output locally
-- The updated files of the website have to be manually pushed to deployment
-- The UI is a basic one and has space for improvements
-- No authentication is set for editing (pure local editing, but anyway the push requires git authentication)
-- Which fields needs to be edited requires manual update of the database and the templates
+- A Publish page allows to commit and push the updated files to the GitHub repository, so that the website is automatically
+  deployed with the new content
+- Style is done mainly with Bootstrap, plus some custom CSS on top
 
 ## Initial idea and exploring
 
@@ -35,8 +32,7 @@ This can potentially solve the problem of running web-apps on free tier:
 instances are shut-down after usually 15 minutes
 of inactivities, causing a reboot time of 30-60 seconds for the next request
 (it would cause the website to run very slow).
-This reboot time is thus only reduced to the few moments when an admin want to change the content.
-The CMS could even run locally on a computer, or on PythonAnywhere or Fly.io
+The Flask application for managing the content runs locally.
 
 ## Skills/knowledge to aquire or to expand
 
@@ -47,36 +43,63 @@ The CMS could even run locally on a computer, or on PythonAnywhere or Fly.io
   github repository (there are some modules like subprocess or GitPython for it),
   in order to not have to manually update the files
 - **SSH authentication**: a better understanding of how public-key cryptography works when pushing a commit to GitHub
-  through SSH
+  through SSH and how to configure aliases for remotes in the .ssh/config file
 - **Usage of Python's subprocess module**: it allows to spawn new processes, for calling automatic git commit
   and pushes from python code
+- **Database updating from forms**: usage of a combination of client-side DOM manipulation with JavaScript and
+  server-side database queries for updating fields, reordering cards, etc...
 
-## Good, better and best outcomes
+## Project Structure
 
-This project will be broken down into layered outcomes, in order to divide the difficulty.
-A good outcome is an initial MVP (minimum viable product), to prove that the idea can work;
-the better outcome and best outcome are improvements on the MVP
+Here is an overview of the key files and directories in the project and what they do:
 
-### Good outcome (MVP)
+```text
+cs50-final-project/
+│
+├── database/                   # Database-related files (database itself is not pushed to GitHub, it is kept local)
+│   ├── init_db.py              # Initialize the database with the schema in schema.sql (Attention, it erase an existing database)
+│   └── schema.sql              # Schema for the database
+│
+├── docs/                       # Folder where the final output of the personal website is written
+│   ├── img/
+│   ├── style/
+│   ├── about.html              # Those html files are pure html static files, not Jinja templates
+│   ├── index.html
+│   └── projects.html
+│
+├── static/
+│   ├── style.css               # Global styling and layout rules
+│   ├── reorder.js              # Client-side DOM manipulation for card swapping and visual effects
+│   └── other static assets
+│
+├── templates/                  # Templates used for the flask app are marked with (admin)
+│   ├── about.html              # Template for about page
+│   ├── add_project.html        # Template for adding a project (admin)
+│   ├── admin_layout.html       # Base layout for the flask application (admin)
+│   ├── admin.html              # Template for the basic admin pages (admin)
+│   ├── edit_project.html       # Template for editing a project (admin)
+│   ├── index.html              # Template for homepage of the website
+│   ├── layout.html             # Base template with common layout, navbar, and block structure
+│   ├── projects.html           # Template for the projects page
+│   ├── publish.html            # Template for the publish page (admin)
+│   └── reorder_projects.html   # Template for changing the order of the projects (admin)
+│
+├── app.py                      # Main Flask application, with routes for each route
+├── helpers.py                  # Helper functions (to get content from database, write an html output file and push to GitHub)
+├── requirements.txt            # Python dependencies (Flask, etc.)
+└── README.md                   # Project documentation
+```
 
-- A local Flask application connected to an SQLite database
-- An /admin page allows to edit the content of the website and saves it locally on the computer
-- No automatic publishing of the new content (it has to be pushed manually)
-- Static fields editing
+## Git setting for automatic workflow
 
-### Better outcome
+- Pressing Save on the various edit pages only makes a specific html page to be updated and rewritten in the /docs folder.
+- Pressing Publish in the Publish page triggers an automatic commit + push git workflow on only the /docs folder, where
+  the output static html files are living.
+- Push to GitHub is made with SSH, with another SSH key than the global key used for manual pushes. An alias set into the
+  ~/.ssh/config file, mapping cs50_final to github.com, allows to use that specific key when pushing to this specific
+  repository. The key is used in GitHub as a deploy key.
 
-- Automated Git Workflow to automatically publish the content on Save
-- Authentication and Flask session
-- Possibility of editing also dynamic lists or sections
-
-### Best outcome
-
-- Image uploads
-- Live preview of changes before saving
-- Sync status indicator ('Last synced at 2.15 PM')
-
-## Use of external AI tools and workflow
+## Use of external AI tools
 
 Gemini AI on free-tier was used, mainly for:
 
@@ -84,5 +107,4 @@ Gemini AI on free-tier was used, mainly for:
   searching resources for learning new skills and technologies to use.
 - Coding: the code was written manually by the author, AI was used only for suggesting code that required new
   knowledge to be acquired.
-
-## Git setting for automatic workflow
+- No code was ever put blindly from AI without understanding what it does.

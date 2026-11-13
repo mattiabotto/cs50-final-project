@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, url_for, send_from_directory
+from flask import Flask, redirect, render_template, request, url_for, send_from_directory
 from helpers import get_content, normalize_content, write_page, run_git_push
 from markupsafe import escape
 

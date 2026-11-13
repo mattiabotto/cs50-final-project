@@ -3,10 +3,12 @@
 {% block title %}About me{% endblock %}
 
 {% block main %}
-<article class="container py-3 py-sm-5">
-  <h1 class="mb-4">{{ content['title']['content'] }}</h1>
-  {% for para in content['biography']['content'] %}
-  <p>{{ para }}</p>
-  {% endfor %}
-</article>
+<div class="container py-3 py-sm-5">
+  <article class="mx-auto">
+    <h1 class="mb-4">{{ content['title']['content'] }}</h1>
+    {% for para in content['biography']['content'] %}
+    <p>{{ para }}</p>
+    {% endfor %}
+  </article>
+</div>
 {% endblock %}

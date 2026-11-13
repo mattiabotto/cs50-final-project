@@ -4,7 +4,7 @@ body {
 }
 
 article {
-  max-inline-size: 75ch;
+  max-inline-size: 50rem;
 }
 
 main {

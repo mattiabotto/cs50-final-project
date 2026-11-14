@@ -86,7 +86,6 @@ cs50-final-project/
 │
 ├── app.py                      # Main Flask application, with routes for each route
 ├── helpers.py                  # Helper functions (to get content from database, write an html output file and push to GitHub)
-├── requirements.txt            # Python dependencies (Flask, etc.)
 └── README.md                   # Project documentation
 ```
 
